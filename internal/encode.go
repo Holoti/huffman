@@ -115,7 +115,7 @@ func generateCodes(tree []models.Node) map[byte]byte {
 	return codes
 }
 
-func encodeInternal(inputFileName, outputFileName string, codes map[byte]byte) error {
+func encodeFile(inputFileName, outputFileName string, codes map[byte]byte) error {
 	inputFile, err := os.Open(inputFileName)
 	if err != nil {
 		return err
@@ -182,6 +182,46 @@ func encodeInternal(inputFileName, outputFileName string, codes map[byte]byte) e
 	for _, i := range output {
 		testOutput += fmt.Sprintf("%b ", i)
 	}
-	fmt.Println(testOutput)
+	// fmt.Println(testOutput)
+	return nil
+}
+
+func encodeTree(outputFileName string, tree []models.Node) error {
+	outputFile, err := os.OpenFile(outputFileName, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer outputFile.Close()
+
+	outputFile.Write([]byte(fmt.Sprintf("%d\n", len(tree))))
+
+	for i, node := range tree {
+		_, err = outputFile.WriteString(fmt.Sprintf("%d %d %d %d %d\n", i, node.Left, node.Right, node.Parent, node.Symbol))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func Encode(inputFileName, outputFileName string) error {
+	forest, symbols, err := createForest(inputFileName)
+	if err != nil {
+		return err
+	}
+
+	tree := createTree(forest, symbols)
+
+	codes := generateCodes(tree)
+
+	err = encodeTree(outputFileName, tree)
+	if err != nil {
+		return err
+	}
+	err = encodeFile(inputFileName, outputFileName, codes)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
