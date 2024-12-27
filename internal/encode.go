@@ -115,7 +115,7 @@ func generateCodes(tree []models.Node) map[byte]byte {
 	return codes
 }
 
-func Encode(inputFileName, outputFileName string, codes map[byte]byte) error {
+func encodeInternal(inputFileName, outputFileName string, codes map[byte]byte) error {
 	inputFile, err := os.Open(inputFileName)
 	if err != nil {
 		return err
