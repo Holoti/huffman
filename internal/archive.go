@@ -195,8 +195,8 @@ func encodeTree(outputFileName string, tree []models.Node) error {
 
 	outputFile.Write([]byte(fmt.Sprintf("%d\n", len(tree))))
 
-	for i, node := range tree {
-		_, err = outputFile.WriteString(fmt.Sprintf("%d %d %d %d %d\n", i, node.Left, node.Right, node.Parent, node.Symbol))
+	for _, node := range tree {
+		_, err = outputFile.WriteString(fmt.Sprintf("%d %d %d %d\n", node.Left, node.Right, node.Parent, node.Symbol))
 		if err != nil {
 			return err
 		}
@@ -204,7 +204,7 @@ func encodeTree(outputFileName string, tree []models.Node) error {
 	return nil
 }
 
-func Encode(inputFileName, outputFileName string) error {
+func Archive(inputFileName, outputFileName string) error {
 	forest, symbols, err := createForest(inputFileName)
 	if err != nil {
 		return err
